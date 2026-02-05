@@ -16,15 +16,14 @@
       --yesHover: #ff1f68;
     }
 
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      margin: 0;
       min-height: 100svh;
       display: grid;
       place-items: center;
       background: radial-gradient(circle at top, var(--bg2), var(--bg1));
-      font-family: system-ui, sans-serif;
+      font-family: system-ui, -apple-system, sans-serif;
       overflow: hidden;
       padding: 16px;
     }
@@ -39,17 +38,20 @@
     }
 
     .card {
-      width: min(720px, 92vw);
-      padding: 26px 22px;
+      width: min(500px, 92vw);
+      padding: 25px;
       background: var(--card);
       backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       border-radius: 22px;
       text-align: center;
       box-shadow: 0 18px 60px rgba(0,0,0,.15);
+      position: relative;
     }
 
     .art {
-      width: min(320px, 85vw);
+      width: 100%;
+      max-width: 280px;
       height: auto;
       margin: 0 auto 10px;
       display: block;
@@ -57,14 +59,15 @@
     }
 
     h1 {
-      font-size: clamp(26px, 4vw, 44px);
-      margin: 12px 0 18px;
+      font-size: clamp(22px, 5vw, 32px);
+      margin: 10px 0 20px;
+      line-height: 1.2;
     }
 
     .button-zone {
       position: relative;
       width: 100%;
-      height: 200px; /* Zväčšená zóna pre útek */
+      height: 140px;
       margin: 0 auto;
       touch-action: none;
     }
@@ -73,20 +76,24 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      padding: 16px 24px;
-      font-size: 18px;
+      /* FIX VELKOSTI TU: */
+      padding: 12px 28px; 
+      font-size: 16px;
+      min-width: 100px;
+      /* ---------------- */
       font-weight: 800;
       border-radius: 999px;
       border: none;
       cursor: pointer;
-      box-shadow: 0 10px 24px rgba(0,0,0,.14);
+      box-shadow: 0 8px 20px rgba(0,0,0,.14);
       user-select: none;
       -webkit-tap-highlight-color: transparent;
-      transition: transform .1s ease, background .12s ease;
+      white-space: nowrap;
+      transition: background .12s ease, transform .1s ease;
     }
 
     #yesBtn {
-      left: 15%;
+      left: 10%;
       background: var(--yes);
       color: #fff;
       z-index: 10;
@@ -94,33 +101,21 @@
     #yesBtn:hover { background: var(--yesHover); }
 
     #noBtn {
-      right: 15%;
+      right: 10%;
       background: #e5e7eb;
       color: #111827;
       transition: left 0.15s cubic-bezier(0.17, 0.67, 0.83, 0.67), top 0.15s cubic-bezier(0.17, 0.67, 0.83, 0.67);
     }
 
     .hint {
-      margin-top: 10px;
+      margin-top: 15px;
       font-size: 13px;
       opacity: .7;
     }
 
     .result {
       display: none;
-      margin-top: 18px;
       animation: pop .35s ease;
-    }
-
-    .result h2 {
-      font-size: clamp(30px, 4.5vw, 46px);
-      margin: 10px 0;
-    }
-
-    .fireworks {
-      width: min(380px, 90vw);
-      margin: 0 auto;
-      display: block;
     }
 
     @keyframes pop {
@@ -136,20 +131,22 @@
   <main class="card">
     <img src="valentin.png" alt="Valentínska ilustrácia" class="art">
 
-    <h1>Kikuš, budeš moja Valentínka?</h1>
+    <div id="main-content">
+      <h1>Kikuš, budeš moja Valentínka?</h1>
 
-    <section class="button-zone" id="zone">
-      <button id="yesBtn">Áno</button>
-      <button id="noBtn">Nie</button>
-    </section>
+      <section class="button-zone" id="zone">
+        <button id="yesBtn">Áno</button>
+        <button id="noBtn">Nie</button>
+      </section>
 
-    <div class="hint" id="hint">Skús kliknúť na „Nie“ ak si trúfaš... 😈</div>
+      <div class="hint" id="hint">Skús kliknúť na „Nie“ ak si trúfaš... 😈</div>
+    </div>
 
     <section class="result" id="result">
-      <h2>VEDEL SOM TO! ❤️ 🎉</h2>
+      <h2 style="font-size: 36px; margin-bottom: 20px; color: #ff3b7a;">JÉÉJ! 🎉 ❤️</h2>
       <img
-        class="fireworks"
-        src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbGYydG1mYjcxNGk5YW82ZjNna3k0ODJ2Mng5OWM5cTQ4dDJnN2FrYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/iyN7EivGQSUxi/giphy.gif"
+        style="width: 100%; border-radius: 12px;"
+        src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeDRqc2k0ODc1NnQxMmRkajBnYmNrZnZ1b2phZ2VqaW8zM3R1dTBjdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/iyN7EivGQSUxi/giphy.gif"
         alt="Fireworks"
       />
     </section>
@@ -160,24 +157,22 @@
     const yesBtn = document.getElementById("yesBtn");
     const noBtn = document.getElementById("noBtn");
     const result = document.getElementById("result");
-    const hint = document.getElementById("hint");
+    const mainContent = document.getElementById("main-content");
+    const art = document.querySelector(".art");
     const confettiCanvas = document.getElementById("confettiCanvas");
 
     function resizeConfettiCanvas() {
       const dpr = Math.max(1, window.devicePixelRatio || 1);
-      confettiCanvas.width = Math.floor(window.innerWidth * dpr);
-      confettiCanvas.height = Math.floor(window.innerHeight * dpr);
-      confettiCanvas.style.width = "100vw";
-      confettiCanvas.style.height = "100vh";
+      confettiCanvas.width = window.innerWidth * dpr;
+      confettiCanvas.height = window.innerHeight * dpr;
     }
-
-    resizeConfettiCanvas();
     window.addEventListener("resize", resizeConfettiCanvas);
+    resizeConfettiCanvas();
 
     const confettiInstance = confetti.create(confettiCanvas, { resize: false, useWorker: true });
 
     function fullScreenConfetti() {
-      const end = Date.now() + 2000;
+      const end = Date.now() + 2500;
       (function frame() {
         confettiInstance({
           particleCount: 15,
@@ -190,7 +185,7 @@
 
     let yesScale = 1;
     function growYes() {
-      yesScale = Math.min(2.5, yesScale + 0.15);
+      yesScale = Math.min(2.0, yesScale + 0.15);
       yesBtn.style.transform = `translateY(-50%) scale(${yesScale})`;
     }
 
@@ -198,28 +193,22 @@
       const z = zone.getBoundingClientRect();
       const b = noBtn.getBoundingClientRect();
 
-      // Úplne náhodná pozícia v rámci zóny
       const newLeft = Math.random() * (z.width - b.width);
       const newTop = Math.random() * (z.height - b.height);
 
       noBtn.style.left = newLeft + "px";
       noBtn.style.top = newTop + "px";
       noBtn.style.transform = "none";
-      
       growYes();
     }
 
-    // Detekcia priblíženia - zväčšená na 200px
     document.addEventListener("pointermove", e => {
       const b = noBtn.getBoundingClientRect();
       const distance = Math.hypot(
         (b.left + b.width / 2) - e.clientX,
         (b.top + b.height / 2) - e.clientY
       );
-      
-      if (distance < 180) {
-        moveNo();
-      }
+      if (distance < 120) moveNo();
     });
 
     noBtn.addEventListener("click", e => {
@@ -228,14 +217,11 @@
     });
 
     yesBtn.addEventListener("click", () => {
-      document.querySelector('.art').style.display = "none";
-      document.querySelector('h1').style.display = "none";
-      zone.style.display = "none";
-      hint.style.display = "none";
+      art.style.display = "none";
+      mainContent.style.display = "none";
       result.style.display = "block";
       fullScreenConfetti();
     });
   </script>
 </body>
-
 </html>

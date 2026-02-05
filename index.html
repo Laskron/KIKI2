@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Budeš moja Valentínka?</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --bg1: #ffd6e7;
+      --bg2: #ffeef6;
+      --card: #ffffffcc;
+      --yes: #ff3b7a;
+      --yesHover: #ff1f68;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at top, var(--bg2), var(--bg1));
+      font-family: system-ui, sans-serif;
+      overflow: hidden;
+      padding: 16px;
+    }
+
+    #confettiCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    .card {
+      width: min(720px, 92vw);
+      padding: 26px 22px;
+      background: var(--card);
+      backdrop-filter: blur(10px);
+      border-radius: 22px;
+      text-align: center;
+      box-shadow: 0 18px 60px rgba(0,0,0,.15);
+    }
+
+    .art {
+      width: min(320px, 85vw);
+      height: auto;
+      margin: 0 auto 10px;
+      display: block;
+      border-radius: 15px;
+    }
+
+    h1 {
+      font-size: clamp(26px, 4vw, 44px);
+      margin: 12px 0 18px;
+    }
+
+    .button-zone {
+      position: relative;
+      width: 100%;
+      height: 200px; /* Zväčšená zóna pre útek */
+      margin: 0 auto;
+      touch-action: none;
+    }
+
+    button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 16px 24px;
+      font-size: 18px;
+      font-weight: 800;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(0,0,0,.14);
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .1s ease, background .12s ease;
+    }
+
+    #yesBtn {
+      left: 15%;
+      background: var(--yes);
+      color: #fff;
+      z-index: 10;
+    }
+    #yesBtn:hover { background: var(--yesHover); }
+
+    #noBtn {
+      right: 15%;
+      background: #e5e7eb;
+      color: #111827;
+      transition: left 0.15s cubic-bezier(0.17, 0.67, 0.83, 0.67), top 0.15s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+    }
+
+    .hint {
+      margin-top: 10px;
+      font-size: 13px;
+      opacity: .7;
+    }
+
+    .result {
+      display: none;
+      margin-top: 18px;
+      animation: pop .35s ease;
+    }
+
+    .result h2 {
+      font-size: clamp(30px, 4.5vw, 46px);
+      margin: 10px 0;
+    }
+
+    .fireworks {
+      width: min(380px, 90vw);
+      margin: 0 auto;
+      display: block;
+    }
+
+    @keyframes pop {
+      from { transform: scale(.96); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="confettiCanvas"></canvas>
+
+  <main class="card">
+    <img src="valentin.png" alt="Valentínska ilustrácia" class="art">
+
+    <h1>Kikuš, budeš moja Valentínka?</h1>
+
+    <section class="button-zone" id="zone">
+      <button id="yesBtn">Áno</button>
+      <button id="noBtn">Nie</button>
+    </section>
+
+    <div class="hint" id="hint">Skús kliknúť na „Nie“ ak si trúfaš... 😈</div>
+
+    <section class="result" id="result">
+      <h2>VEDEL SOM TO! ❤️ 🎉</h2>
+      <img
+        class="fireworks"
+        src="https://giphy.com/gifs/love-heart-iyN7EivGQSUxi"
+        alt="Fireworks"
+      />
+    </section>
+  </main>
+
+  <script>
+    const zone = document.getElementById("zone");
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const result = document.getElementById("result");
+    const hint = document.getElementById("hint");
+    const confettiCanvas = document.getElementById("confettiCanvas");
+
+    function resizeConfettiCanvas() {
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      confettiCanvas.width = Math.floor(window.innerWidth * dpr);
+      confettiCanvas.height = Math.floor(window.innerHeight * dpr);
+      confettiCanvas.style.width = "100vw";
+      confettiCanvas.style.height = "100vh";
+    }
+
+    resizeConfettiCanvas();
+    window.addEventListener("resize", resizeConfettiCanvas);
+
+    const confettiInstance = confetti.create(confettiCanvas, { resize: false, useWorker: true });
+
+    function fullScreenConfetti() {
+      const end = Date.now() + 2000;
+      (function frame() {
+        confettiInstance({
+          particleCount: 15,
+          spread: 100,
+          origin: { x: Math.random(), y: Math.random() * 0.4 }
+        });
+        if (Date.now() < end) requestAnimationFrame(frame);
+      })();
+    }
+
+    let yesScale = 1;
+    function growYes() {
+      yesScale = Math.min(2.5, yesScale + 0.15);
+      yesBtn.style.transform = `translateY(-50%) scale(${yesScale})`;
+    }
+
+    function moveNo() {
+      const z = zone.getBoundingClientRect();
+      const b = noBtn.getBoundingClientRect();
+
+      // Úplne náhodná pozícia v rámci zóny
+      const newLeft = Math.random() * (z.width - b.width);
+      const newTop = Math.random() * (z.height - b.height);
+
+      noBtn.style.left = newLeft + "px";
+      noBtn.style.top = newTop + "px";
+      noBtn.style.transform = "none";
+      
+      growYes();
+    }
+
+    // Detekcia priblíženia - zväčšená na 200px
+    document.addEventListener("pointermove", e => {
+      const b = noBtn.getBoundingClientRect();
+      const distance = Math.hypot(
+        (b.left + b.width / 2) - e.clientX,
+        (b.top + b.height / 2) - e.clientY
+      );
+      
+      if (distance < 180) {
+        moveNo();
+      }
+    });
+
+    noBtn.addEventListener("click", e => {
+        e.preventDefault();
+        moveNo();
+    });
+
+    yesBtn.addEventListener("click", () => {
+      document.querySelector('.art').style.display = "none";
+      document.querySelector('h1').style.display = "none";
+      zone.style.display = "none";
+      hint.style.display = "none";
+      result.style.display = "block";
+      fullScreenConfetti();
+    });
+  </script>
+</body>
+</html>

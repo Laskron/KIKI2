@@ -28,6 +28,7 @@
       padding: 16px;
     }
 
+    /* Plátno pre konfety cez celú plochu */
     #confettiCanvas {
       position: fixed;
       inset: 0;
@@ -47,6 +48,7 @@
       text-align: center;
       box-shadow: 0 18px 60px rgba(0,0,0,.15);
       position: relative;
+      z-index: 1;
     }
 
     .art {
@@ -72,15 +74,11 @@
       touch-action: none;
     }
 
+    /* Spoločný základ pre tlačidlá */
     button {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      /* FIX VELKOSTI TU: */
       padding: 12px 28px; 
       font-size: 16px;
       min-width: 50px;
-      /* ---------------- */
       font-weight: 800;
       border-radius: 999px;
       border: none;
@@ -89,28 +87,33 @@
       user-select: none;
       -webkit-tap-highlight-color: transparent;
       white-space: nowrap;
-      transition: background .12s ease, transform .1s ease;
+      transition: background .12s ease;
     }
 
+    /* Tlačidlo Áno - centrované v karte */
     #yesBtn {
+      position: absolute;
       left: 10%;
+      top: 50%;
+      transform: translateY(-50%);
       background: var(--yes);
       color: #fff;
       z-index: 10;
+      transition: background .12s ease, transform .1s ease;
     }
     #yesBtn:hover { background: var(--yesHover); }
 
+    /* Tlačidlo Nie - počiatočná pozícia v karte */
     #noBtn {
-  position: absolute; 
-  left: 60%; 
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10000;
-  width: 80px;
-  background: #e5e7eb;
-  color: #111827;
-  margin: 0; 
-  transition: left 0.15s ease-out, top 0.15s ease-out;
+      position: absolute;
+      right: 10%;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #e5e7eb;
+      color: #111827;
+      z-index: 10000;
+      width: 80px;
+      transition: left 0.15s ease-out, top 0.15s ease-out;
     }
 
     .hint {
@@ -153,13 +156,12 @@
       <img
         style="width: 100%; border-radius: 12px;"
         src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeDRqc2k0ODc1NnQxMmRkajBnYmNrZnZ1b2phZ2VqaW8zM3R1dTBjdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/iyN7EivGQSUxi/giphy.gif"
-        alt="Fireworks"
+        alt="Celebration"
       />
     </section>
   </main>
 
   <script>
-    const zone = document.getElementById("zone");
     const yesBtn = document.getElementById("yesBtn");
     const noBtn = document.getElementById("noBtn");
     const result = document.getElementById("result");
@@ -167,6 +169,7 @@
     const art = document.querySelector(".art");
     const confettiCanvas = document.getElementById("confettiCanvas");
 
+    // Správne prispôsobenie canvasu na celú obrazovku
     function resizeConfettiCanvas() {
       const dpr = Math.max(1, window.devicePixelRatio || 1);
       confettiCanvas.width = window.innerWidth * dpr;
@@ -178,12 +181,12 @@
     const confettiInstance = confetti.create(confettiCanvas, { resize: false, useWorker: true });
 
     function fullScreenConfetti() {
-      const end = Date.now() + 2500;
+      const end = Date.now() + 3000;
       (function frame() {
         confettiInstance({
           particleCount: 15,
           spread: 100,
-          origin: { x: Math.random(), y: Math.random() * 0.4 }
+          origin: { x: Math.random(), y: Math.random() * 0.5 } // Konfety lietajú zhora
         });
         if (Date.now() < end) requestAnimationFrame(frame);
       })();
@@ -191,34 +194,31 @@
 
     let yesScale = 1;
     function growYes() {
-      yesScale = Math.min(2.0, yesScale + 0.15);
+      yesScale = Math.min(2.5, yesScale + 0.15);
       yesBtn.style.transform = `translateY(-50%) scale(${yesScale})`;
     }
 
     function moveNo() {
+      // Definitívny reset pre lietanie po celej obrazovke
       if (noBtn.style.position !== 'fixed') {
         noBtn.style.position = 'fixed';
-        // KĽÚČOVÁ OPRAVA TU:
-        noBtn.style.top = '0px';      // Vynulujeme 50% z CSS
-        noBtn.style.left = '0px';     // Vynulujeme pôvodný left
-        noBtn.style.transform = 'none'; // Zrušíme translateY(-50%)
+        noBtn.style.transform = 'none'; // Odstráni vertikálne ťahanie z CSS
+        noBtn.style.top = '0px';
+        noBtn.style.left = '0px';
         noBtn.style.transition = 'none'; 
       }
 
       const btnWidth = noBtn.offsetWidth;
       const btnHeight = noBtn.offsetHeight;
-      
-      const padding = 60; 
+      const padding = 80; // Bezpečné mantinely
 
-      // Výpočet mantinelov
       const maxX = window.innerWidth - btnWidth - padding;
       const maxY = window.innerHeight - btnHeight - padding;
 
-      // Náhodné súradnice v bezpečnej zóne
+      // Náhodné súradnice v rámci mantinelov okna
       const newLeft = Math.floor(Math.random() * (maxX - padding)) + padding;
       const newTop = Math.floor(Math.random() * (maxY - padding)) + padding;
 
-      // Aplikujeme nové súradnice
       noBtn.style.left = newLeft + "px";
       noBtn.style.top = newTop + "px";
 
@@ -229,15 +229,17 @@
       growYes();
     }
 
+    // Detekcia pohybu myši pre útek tlačidla
     document.addEventListener("pointermove", e => {
       const b = noBtn.getBoundingClientRect();
       const distance = Math.hypot(
         (b.left + b.width / 2) - e.clientX,
         (b.top + b.height / 2) - e.clientY
       );
-      if (distance < 120) moveNo();
+      if (distance < 130) moveNo();
     });
 
+    // Poistka pri kliknutí (ak by sa trafil)
     noBtn.addEventListener("click", e => {
         e.preventDefault();
         moveNo();
@@ -246,13 +248,13 @@
     yesBtn.addEventListener("click", () => {
       art.style.display = "none";
       mainContent.style.display = "none";
+      noBtn.style.display = "none"; // Schová lietajúce tlačidlo
       result.style.display = "block";
       fullScreenConfetti();
     });
   </script>
 </body>
 </html>
-
 
 
 

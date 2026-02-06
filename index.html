@@ -101,11 +101,12 @@
     #yesBtn:hover { background: var(--yesHover); }
 
     #noBtn {
-      right: 10%;
-      width: 80px;
-      background: #e5e7eb;
-      color: #111827;
-      transition: left 0.15s cubic-bezier(0.17, 0.67, 0.83, 0.67), top 0.15s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+  position: fixed; 
+  z-index: 10000;  
+  width: 80px;     
+  background: #e5e7eb;
+  color: #111827; 
+  transition: left 0.2s ease-out, top 0.2s ease-out; 
     }
 
     .hint {
@@ -191,16 +192,17 @@
     }
 
     function moveNo() {
-      const z = zone.getBoundingClientRect();
       const b = noBtn.getBoundingClientRect();
 
-      const newLeft = Math.random() * (z.width - b.width);
-      const newTop = Math.random() * (z.height - b.height);
+      const newLeft = Math.random() * (window.innerWidth - b.width);
+      const newTop = Math.random() * (window.innerHeight - b.height);
 
       noBtn.style.left = newLeft + "px";
       noBtn.style.top = newTop + "px";
-      noBtn.style.transform = "none";
-      growYes();
+  
+        noBtn.style.transform = "none";
+  
+  growYes();
     }
 
     document.addEventListener("pointermove", e => {
@@ -226,4 +228,5 @@
   </script>
 </body>
 </html>
+
 

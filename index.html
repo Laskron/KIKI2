@@ -101,12 +101,16 @@
     #yesBtn:hover { background: var(--yesHover); }
 
     #noBtn {
-  position: fixed; 
-  z-index: 10000;  
-  width: 80px;     
+  position: absolute; 
+  left: 60%; 
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10000;
+  width: 80px;
   background: #e5e7eb;
-  color: #111827; 
-  transition: left 0.2s ease-out, top 0.2s ease-out; 
+  color: #111827;
+  margin: 0; 
+  transition: left 0.15s ease-out, top 0.15s ease-out;
     }
 
     .hint {
@@ -192,18 +196,28 @@
     }
 
     function moveNo() {
-      const b = noBtn.getBoundingClientRect();
+  // KĽÚČOVÁ ZMENA: Pri prvom úteku zmeníme pozíciu na fixed,
+  // aby mohlo tlačidlo lietať po celom okne
+  if (noBtn.style.position !== 'fixed') {
+    noBtn.style.position = 'fixed';
+    noBtn.style.transform = 'none'; // Odstránime centrovanie, aby nekazilo výpočet
+  }
 
-      const newLeft = Math.random() * (window.innerWidth - b.width);
-      const newTop = Math.random() * (window.innerHeight - b.height);
+  const b = noBtn.getBoundingClientRect();
 
-      noBtn.style.left = newLeft + "px";
-      noBtn.style.top = newTop + "px";
-  
-        noBtn.style.transform = "none";
+  // Bezpečné súradnice v rámci celého okna prehliadača
+  const maxX = window.innerWidth - b.width;
+  const maxY = window.innerHeight - b.height;
+
+  // Náhodné súradnice s rezervou, aby tlačidlo nebolo nalepené na hrane
+  const newLeft = Math.max(10, Math.random() * (maxX - 20));
+  const newTop = Math.max(10, Math.random() * (maxY - 20));
+
+  noBtn.style.left = newLeft + "px";
+  noBtn.style.top = newTop + "px";
   
   growYes();
-    }
+}
 
     document.addEventListener("pointermove", e => {
       const b = noBtn.getBoundingClientRect();
@@ -228,5 +242,6 @@
   </script>
 </body>
 </html>
+
 
 

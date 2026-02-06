@@ -39,17 +39,23 @@
     }
 
     .card {
-      width: min(500px, 92vw);
-      padding: 25px;
-      background: var(--card);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-radius: 22px;
-      text-align: center;
-      box-shadow: 0 18px 60px rgba(0,0,0,.15);
-      position: relative;
-      z-index: 1;
-    }
+  width: min(500px, 92vw);
+  padding: 25px;
+  background: var(--card);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 22px;
+  text-align: center;
+  box-shadow: 0 18px 60px rgba(0,0,0,.15);
+  position: relative;
+  z-index: 1;
+  /* DOPLNENÉ RIADKY: */
+  overflow: hidden;    /* Tlačidlo nepretečie von cez okraje */
+  min-height: 480px;   /* Vyššia karta, aby malo tlačidlo kam utekať */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
 
     .art {
       width: 100%;
@@ -105,16 +111,16 @@
 
     /* Tlačidlo Nie - počiatočná pozícia v karte */
     #noBtn {
-      position: absolute;
-      right: 10%;
-      top: 50%;
-      transform: translateY(-50%);
-      background: #e5e7eb;
-      color: #111827;
-      z-index: 10000;
-      width: 80px;
-      transition: left 0.15s ease-out, top 0.15s ease-out;
-    }
+  position: absolute; /* Musí byť absolute, aby bralo súradnice z karty */
+  right: 10%;         /* Počiatočná pozícia */
+  top: 65%;           /* Počiatočná pozícia */
+  z-index: 100;
+  width: 80px;
+  background: #e5e7eb;
+  color: #111827;
+  transition: left 0.2s ease-out, top 0.2s ease-out;
+  transform: none !important; /* Zrušíme všetky translateY z predchádzajúcich pokusov */
+}
 
     .hint {
       margin-top: 15px;
@@ -198,52 +204,50 @@
       yesBtn.style.transform = `translateY(-50%) scale(${yesScale})`;
     }
 
-    let isMoving = false; // Zámok proti vibráciám
+    let isMoving = false;
 
-    function moveNo() {
-      if (isMoving) return; // Ak sa práve hýbe, ignoruj ďalšie príkazy
-      isMoving = true;
+function moveNo() {
+  if (isMoving) return;
+  isMoving = true;
 
-      if (noBtn.style.position !== 'fixed') {
-        noBtn.style.position = 'fixed';
-        noBtn.style.right = 'auto';
-        noBtn.style.bottom = 'auto';
-        noBtn.style.transform = 'none';
-        noBtn.style.margin = '0';
-        noBtn.style.transition = 'none';
-      }
+  const card = document.querySelector(".card");
+  
+  // Zistíme rozmery karty a tlačidla
+  const cardW = card.clientWidth;
+  const cardH = card.clientHeight;
+  const btnW = noBtn.offsetWidth;
+  const btnH = noBtn.offsetHeight;
 
-      const btnWidth = noBtn.offsetWidth;
-      const btnHeight = noBtn.offsetHeight;
-      const padding = 80;
+  const padding = 20; // Malá rezerva od okraja bieleho rámu
 
-      const maxX = window.innerWidth - btnWidth - padding;
-      const maxY = window.innerHeight - btnHeight - padding;
+  // Výpočet mantinelov vnútri karty
+  const maxX = cardW - btnW - padding;
+  const maxY = cardH - btnH - padding;
 
-      // Zapamätáme si starú pozíciu
-      const oldLeft = parseFloat(noBtn.style.left) || 0;
-      const oldTop = parseFloat(noBtn.style.top) || 0;
+  // Stará pozícia pre výpočet skoku
+  const oldLeft = parseFloat(noBtn.style.left) || (cardW * 0.6);
+  const oldTop = parseFloat(noBtn.style.top) || (cardH * 0.5);
 
-      let newLeft, newTop, distance;
+  let newLeft, newTop, distance;
 
-      // Skúšaj nájsť novú pozíciu, kým nebude dostatočne ďaleko (aspoň 200px)
-      do {
-        newLeft = Math.floor(Math.random() * (maxX - padding)) + padding;
-        newTop = Math.floor(Math.random() * (maxY - padding)) + padding;
-        distance = Math.hypot(newLeft - oldLeft, newTop - oldTop);
-      } while (distance < 200); // Ak je skok príliš malý, skús znova
+  // Hľadáme nové miesto vnútri karty, ktoré je aspoň 100px ďaleko
+  let attempts = 0;
+  do {
+    newLeft = Math.floor(Math.random() * (maxX - padding)) + padding;
+    newTop = Math.floor(Math.random() * (maxY - padding)) + padding;
+    distance = Math.hypot(newLeft - oldLeft, newTop - oldTop);
+    attempts++;
+  } while (distance < 100 && attempts < 20);
 
-      noBtn.style.left = newLeft + "px";
-      noBtn.style.top = newTop + "px";
+  // Aplikujeme súradnice relatívne ku karte
+  noBtn.style.left = newLeft + "px";
+  noBtn.style.top = newTop + "px";
 
-      // Vrátime plynulosť a po 100ms odomkneme zámok
-      setTimeout(() => {
-        noBtn.style.transition = 'left 0.2s ease-out, top 0.2s ease-out';
-        setTimeout(() => { isMoving = false; }, 100); 
-      }, 10);
+  // Odomkneme po krátkom čase
+  setTimeout(() => { isMoving = false; }, 200);
 
-      growYes();
-    }
+  growYes();
+}
     // Detekcia pohybu myši pre útek tlačidla
     document.addEventListener("pointermove", e => {
       const b = noBtn.getBoundingClientRect();
@@ -270,6 +274,7 @@
   </script>
 </body>
 </html>
+
 
 
 

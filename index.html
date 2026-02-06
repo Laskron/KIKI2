@@ -196,31 +196,31 @@
     }
 
     function moveNo() {
-  // Ak je to prvý útek, prepneme na fixed
   if (noBtn.style.position !== 'fixed') {
     noBtn.style.position = 'fixed';
     noBtn.style.transform = 'none';
-    // Odstránime plynulý prechod pre "top" a "left" pri prvom skoku, 
-    // aby tlačidlo nepreletelo cez pol obrazovky viditeľne
     noBtn.style.transition = 'none'; 
   }
 
-  const b = noBtn.getBoundingClientRect();
-  const padding = 50; // MANTINELY: Tlačidlo sa nepriblíži k okraju bližšie ako na 50px
+  // Použijeme offsetWidth/Height pre presnejšie rozmery tlačidla
+  const btnWidth = noBtn.offsetWidth;
+  const btnHeight = noBtn.offsetHeight;
+  
+  const padding = 60; // Zväčšený mantinel pre istotu
 
-  // Výpočet maximálnych súradníc s ohľadom na mantinely
-  const maxX = window.innerWidth - b.width - padding;
-  const maxY = window.innerHeight - b.height - padding;
+  // Kľúčová oprava: window.innerHeight je presná viditeľná výška
+  const maxX = window.innerWidth - btnWidth - padding;
+  const maxY = window.innerHeight - btnHeight - padding;
 
-  // Vygenerujeme náhodnú pozíciu, ktorá začína až od 'padding' (nie od 0)
+  // Generujeme súradnice tak, aby minimálna hodnota bola vždy aspoň 'padding'
+  // a maximálna nepresiahla vypočítané hranice okna
   const newLeft = Math.floor(Math.random() * (maxX - padding)) + padding;
   const newTop = Math.floor(Math.random() * (maxY - padding)) + padding;
 
-  // Aplikujeme nové súradnice
+  // Aplikujeme súradnice
   noBtn.style.left = newLeft + "px";
   noBtn.style.top = newTop + "px";
 
-  // Vrátime transition po krátkej chvíli, aby ďalšie pohyby boli plynulé
   setTimeout(() => {
     noBtn.style.transition = 'left 0.2s ease-out, top 0.2s ease-out';
   }, 10);
@@ -251,6 +251,7 @@
   </script>
 </body>
 </html>
+
 
 
 

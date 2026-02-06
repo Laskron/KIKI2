@@ -199,35 +199,43 @@
     }
 
     function moveNo() {
-      // Definitívny reset pre lietanie po celej obrazovke
-      if (noBtn.style.position !== 'fixed') {
-        noBtn.style.position = 'fixed';
-        noBtn.style.transform = 'none'; // Odstráni vertikálne ťahanie z CSS
-        noBtn.style.top = '0px';
-        noBtn.style.left = '0px';
-        noBtn.style.transition = 'none'; 
-      }
+  // Prvý útek: Odstrihneme všetky CSS putá
+  if (noBtn.style.position !== 'fixed') {
+    noBtn.style.position = 'fixed';
+    
+    // Tieto riadky vymažú vplyv "right: 10%" a "top: 50%" z tvojho CSS
+    noBtn.style.right = 'auto';  
+    noBtn.style.bottom = 'auto';
+    noBtn.style.transform = 'none'; 
+    noBtn.style.margin = '0';
+    noBtn.style.transition = 'none'; 
+  }
 
-      const btnWidth = noBtn.offsetWidth;
-      const btnHeight = noBtn.offsetHeight;
-      const padding = 80; // Bezpečné mantinely
+  const btnWidth = noBtn.offsetWidth;
+  const btnHeight = noBtn.offsetHeight;
+  
+  // Mantinel 80 pixelov od každého okraja
+  const padding = 80; 
 
-      const maxX = window.innerWidth - btnWidth - padding;
-      const maxY = window.innerHeight - btnHeight - padding;
+  // Vypočítame dostupnú plochu okna
+  const maxX = window.innerWidth - btnWidth - padding;
+  const maxY = window.innerHeight - btnHeight - padding;
 
-      // Náhodné súradnice v rámci mantinelov okna
-      const newLeft = Math.floor(Math.random() * (maxX - padding)) + padding;
-      const newTop = Math.floor(Math.random() * (maxY - padding)) + padding;
+  // Vygenerujeme súradnice (min je padding, max je maxX/maxY)
+  const newLeft = Math.floor(Math.random() * (maxX - padding)) + padding;
+  const newTop = Math.floor(Math.random() * (maxY - padding)) + padding;
 
-      noBtn.style.left = newLeft + "px";
-      noBtn.style.top = newTop + "px";
+  // Nastavíme nové súradnice
+  noBtn.style.left = newLeft + "px";
+  noBtn.style.top = newTop + "px";
 
-      setTimeout(() => {
-        noBtn.style.transition = 'left 0.2s ease-out, top 0.2s ease-out';
-      }, 10);
-      
-      growYes();
-    }
+  // Vrátime plynulosť pohybu
+  setTimeout(() => {
+    noBtn.style.transition = 'left 0.2s ease-out, top 0.2s ease-out';
+  }, 10);
+  
+  growYes();
+}
 
     // Detekcia pohybu myši pre útek tlačidla
     document.addEventListener("pointermove", e => {
@@ -255,6 +263,7 @@
   </script>
 </body>
 </html>
+
 
 
 

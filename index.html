@@ -28,7 +28,6 @@
       padding: 16px;
     }
 
-    /* Plátno pre konfety cez celú plochu */
     #confettiCanvas {
       position: fixed;
       inset: 0;
@@ -39,27 +38,23 @@
     }
 
     .card {
-  width: min(500px, 92vw);
-  padding: 25px;
-  background: var(--card);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 22px;
-  text-align: center;
-  box-shadow: 0 18px 60px rgba(0,0,0,.15);
-  position: relative;
-  z-index: 1;
-  /* DOPLNENÉ RIADKY: */
-  overflow: hidden;    /* Tlačidlo nepretečie von cez okraje */
-  min-height: 480px;   /* Vyššia karta, aby malo tlačidlo kam utekať */
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
+      width: min(500px, 92vw);
+      padding: 25px;
+      background: var(--card);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 22px;
+      text-align: center;
+      box-shadow: 0 18px 60px rgba(0,0,0,.15);
+      position: relative;
+      z-index: 1;
+      overflow: hidden;    /* Tlačidlo nepretečie von */
+      min-height: 500px;   /* Dosť miesta na naháňačku */
+    }
 
     .art {
       width: 100%;
-      max-width: 280px;
+      max-width: 260px;
       height: auto;
       margin: 0 auto 10px;
       display: block;
@@ -67,7 +62,7 @@
     }
 
     h1 {
-      font-size: clamp(22px, 5vw, 32px);
+      font-size: clamp(20px, 4.5vw, 28px);
       margin: 10px 0 20px;
       line-height: 1.2;
     }
@@ -75,16 +70,13 @@
     .button-zone {
       position: relative;
       width: 100%;
-      height: 140px;
-      margin: 0 auto;
-      touch-action: none;
+      height: 160px; /* Vyššia zóna pre tlačidlá */
+      margin-top: 20px;
     }
 
-    /* Spoločný základ pre tlačidlá */
     button {
       padding: 12px 28px; 
       font-size: 16px;
-      min-width: 50px;
       font-weight: 800;
       border-radius: 999px;
       border: none;
@@ -93,13 +85,11 @@
       user-select: none;
       -webkit-tap-highlight-color: transparent;
       white-space: nowrap;
-      transition: background .12s ease;
     }
 
-    /* Tlačidlo Áno - centrované v karte */
     #yesBtn {
       position: absolute;
-      left: 10%;
+      left: 15%;
       top: 50%;
       transform: translateY(-50%);
       background: var(--yes);
@@ -107,34 +97,26 @@
       z-index: 10;
       transition: background .12s ease, transform .1s ease;
     }
-    #yesBtn:hover { background: var(--yesHover); }
 
-    /* Tlačidlo Nie - počiatočná pozícia v karte */
     #noBtn {
-  position: absolute; /* Musí byť absolute, aby bralo súradnice z karty */
-  right: 10%;         /* Počiatočná pozícia */
-  top: 65%;           /* Počiatočná pozícia */
-  z-index: 100;
-  width: 80px;
-  background: #e5e7eb;
-  color: #111827;
-  transition: left 0.2s ease-out, top 0.2s ease-out;
-  transform: none !important; /* Zrušíme všetky translateY z predchádzajúcich pokusov */
-}
-
-    .hint {
-      margin-top: 15px;
-      font-size: 13px;
-      opacity: .7;
+      position: absolute;
+      left: 65%; /* Počiatočná pozícia */
+      top: 50%;
+      transform: translateY(-50%);
+      background: #e5e7eb;
+      color: #111827;
+      z-index: 20;
+      width: 80px;
+      transition: left 0.2s ease-out, top 0.2s ease-out;
     }
 
     .result {
       display: none;
-      animation: pop .35s ease;
+      animation: pop .35s ease forwards;
     }
 
     @keyframes pop {
-      from { transform: scale(.96); opacity: 0; }
+      from { transform: scale(.9); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
     }
   </style>
@@ -148,137 +130,106 @@
 
     <div id="main-content">
       <h1>Kikuš, budeš moja Valentínka?</h1>
-
-      <section class="button-zone" id="zone">
+      <section class="button-zone">
         <button id="yesBtn">Áno</button>
         <button id="noBtn">Nie</button>
       </section>
-
-      <div class="hint" id="hint">Skús kliknúť na „Nie“ ak si trúfaš... 😈</div>
     </div>
 
     <section class="result" id="result">
-      <h2 style="font-size: 36px; margin-bottom: 20px; color: #ff3b7a;">VEDEL SOM TO! ❤️ 🎉 </h2>
-      <img
-        style="width: 100%; border-radius: 12px;"
-        src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeDRqc2k0ODc1NnQxMmRkajBnYmNrZnZ1b2phZ2VqaW8zM3R1dTBjdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/iyN7EivGQSUxi/giphy.gif"
-        alt="Celebration"
-      />
+      <h2 style="font-size: 32px; margin-bottom: 20px; color: #ff3b7a;">VEDEL SOM TO! ❤️ 🎉</h2>
+      <img style="width: 100%; border-radius: 12px;" src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeDRqc2k0ODc1NnQxMmRkajBnYmNrZnZ1b2phZ2VqaW8zM3R1dTBjdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/iyN7EivGQSUxi/giphy.gif" alt="Celebration">
     </section>
   </main>
 
   <script>
-    const yesBtn = document.getElementById("yesBtn");
     const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
     const result = document.getElementById("result");
     const mainContent = document.getElementById("main-content");
     const art = document.querySelector(".art");
-    const confettiCanvas = document.getElementById("confettiCanvas");
+    const canvas = document.getElementById("confettiCanvas");
 
-    // Správne prispôsobenie canvasu na celú obrazovku
-    function resizeConfettiCanvas() {
-      const dpr = Math.max(1, window.devicePixelRatio || 1);
-      confettiCanvas.width = window.innerWidth * dpr;
-      confettiCanvas.height = window.innerHeight * dpr;
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     }
-    window.addEventListener("resize", resizeConfettiCanvas);
-    resizeConfettiCanvas();
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
 
-    const confettiInstance = confetti.create(confettiCanvas, { resize: false, useWorker: true });
-
-    function fullScreenConfetti() {
-      const end = Date.now() + 3000;
-      (function frame() {
-        confettiInstance({
-          particleCount: 15,
-          spread: 100,
-          origin: { x: Math.random(), y: Math.random() * 0.5 } // Konfety lietajú zhora
-        });
-        if (Date.now() < end) requestAnimationFrame(frame);
-      })();
-    }
+    const confettiInstance = confetti.create(canvas, { resize: true });
 
     let yesScale = 1;
-    function growYes() {
-      yesScale = Math.min(2.5, yesScale + 0.15);
-      yesBtn.style.transform = `translateY(-50%) scale(${yesScale})`;
-    }
-
     let isMoving = false;
 
-function moveNo() {
-  if (isMoving) return;
-  isMoving = true;
+    function moveNo() {
+      if (isMoving) return;
+      isMoving = true;
 
-  const card = document.querySelector(".card");
-  
-  // Zistíme rozmery karty a tlačidla
-  const cardW = card.clientWidth;
-  const cardH = card.clientHeight;
-  const btnW = noBtn.offsetWidth;
-  const btnH = noBtn.offsetHeight;
+      const card = document.querySelector(".card");
+      const cardRect = card.getBoundingClientRect();
+      const btnW = noBtn.offsetWidth;
+      const btnH = noBtn.offsetHeight;
 
-  const padding = 20; // Malá rezerva od okraja bieleho rámu
+      // Mantinely vnútri karty (padding 20px)
+      const padding = 20;
+      const maxX = card.clientWidth - btnW - padding;
+      const maxY = card.clientHeight - btnH - padding;
 
-  // Výpočet mantinelov vnútri karty
-  const maxX = cardW - btnW - padding;
-  const maxY = cardH - btnH - padding;
+      // Zrušíme centrovanie z CSS pri prvom pohybe
+      noBtn.style.transform = 'none';
+      noBtn.style.right = 'auto';
+      noBtn.style.bottom = 'auto';
 
-  // Stará pozícia pre výpočet skoku
-  const oldLeft = parseFloat(noBtn.style.left) || (cardW * 0.6);
-  const oldTop = parseFloat(noBtn.style.top) || (cardH * 0.5);
+      // Výpočet novej náhodnej pozície
+      const newLeft = Math.max(padding, Math.floor(Math.random() * maxX));
+      const newTop = Math.max(padding, Math.floor(Math.random() * maxY));
 
-  let newLeft, newTop, distance;
+      noBtn.style.left = newLeft + "px";
+      noBtn.style.top = newTop + "px";
 
-  // Hľadáme nové miesto vnútri karty, ktoré je aspoň 100px ďaleko
-  let attempts = 0;
-  do {
-    newLeft = Math.floor(Math.random() * (maxX - padding)) + padding;
-    newTop = Math.floor(Math.random() * (maxY - padding)) + padding;
-    distance = Math.hypot(newLeft - oldLeft, newTop - oldTop);
-    attempts++;
-  } while (distance < 100 && attempts < 20);
+      // Zväčšenie tlačidla Áno
+      yesScale = Math.min(2.5, yesScale + 0.15);
+      yesBtn.style.transform = `translateY(-50%) scale(${yesScale})`;
 
-  // Aplikujeme súradnice relatívne ku karte
-  noBtn.style.left = newLeft + "px";
-  noBtn.style.top = newTop + "px";
+      setTimeout(() => { isMoving = false; }, 150);
+    }
 
-  // Odomkneme po krátkom čase
-  setTimeout(() => { isMoving = false; }, 200);
-
-  growYes();
-}
-    // Detekcia pohybu myši pre útek tlačidla
-    document.addEventListener("pointermove", e => {
+    // Detekcia myši/prsta
+    document.addEventListener("pointermove", (e) => {
       const b = noBtn.getBoundingClientRect();
-      const distance = Math.hypot(
-        (b.left + b.width / 2) - e.clientX,
-        (b.top + b.height / 2) - e.clientY
-      );
-      if (distance < 130) moveNo();
+      const x = b.left + b.width / 2;
+      const y = b.top + b.height / 2;
+      const dist = Math.hypot(x - e.clientX, y - e.clientY);
+
+      if (dist < 85) moveNo();
     });
 
-    // Poistka pri kliknutí (ak by sa trafil)
-    noBtn.addEventListener("click", e => {
-        e.preventDefault();
-        moveNo();
+    noBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      moveNo();
     });
 
     yesBtn.addEventListener("click", () => {
       art.style.display = "none";
       mainContent.style.display = "none";
-      noBtn.style.display = "none"; // Schová lietajúce tlačidlo
+      noBtn.style.display = "none";
       result.style.display = "block";
-      fullScreenConfetti();
+      
+      const duration = 3000;
+      const animationEnd = Date.now() + duration;
+
+      (function frame() {
+        const timeLeft = animationEnd - Date.now();
+        if (timeLeft <= 0) return;
+        confettiInstance({
+          particleCount: 10,
+          spread: 70,
+          origin: { x: Math.random(), y: Math.random() - 0.2 }
+        });
+        requestAnimationFrame(frame);
+      }());
     });
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
